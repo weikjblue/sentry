@@ -37,7 +37,7 @@ def _get_daemon(name):
     "--prefix/--no-prefix", default=True, help="Show the service name prefix and timestamp"
 )
 @click.option(
-    "--pretty/--no-pretty", default=True, help="Styleize various outputs from the devserver"
+    "--pretty/--no-pretty", default=True, help="Stylize various outputs from the devserver"
 )
 @click.option(
     "--styleguide/--no-styleguide",
