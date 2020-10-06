@@ -74,7 +74,7 @@ jobs:
             echo "::add-matcher::.github/eslint-stylish.json"
 
         - name: eslint + fix
-          uses: getsentry/action-eslint-fix@v2
+          uses: getsentry/action-eslint-fix@v1
           with:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
