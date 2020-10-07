@@ -1,10 +1,14 @@
 import React from 'react';
+import styled from '@emotion/styled';
+import PlatformIcon from 'platformicons';
+import scrollToElement from 'scroll-to-element';
 
 import Line from 'app/components/events/interfaces/frame/line';
 import {t} from 'app/locale';
 import {parseAddress, getImageRange} from 'app/components/events/interfaces/utils';
 import {StacktraceType} from 'app/types/stacktrace';
 import {PlatformType, Event, Frame} from 'app/types';
+import {List, ListItem} from 'app/components/list';
 
 const defaultProps = {
   includeSystemFrames: true,
@@ -21,6 +25,7 @@ type Props = {
 
 type State = {
   showingAbsoluteAddresses: boolean;
+  showCompleteFunctionName: boolean;
 };
 
 export default class StacktraceContent extends React.Component<Props, State> {
@@ -31,6 +36,7 @@ export default class StacktraceContent extends React.Component<Props, State> {
 
   state: State = {
     showingAbsoluteAddresses: false,
+    showCompleteFunctionName: false,
   };
 
   renderOmittedFrames = (firstFrameOmitted, lastFrameOmitted) => {
@@ -43,7 +49,7 @@ export default class StacktraceContent extends React.Component<Props, State> {
       firstFrameOmitted,
       lastFrameOmitted
     );
-    return <li {...props}>{text}</li>;
+    return <StyledListItem {...props}>{text}</StyledListItem>;
   };
 
   isFrameAfterLastNonApp(): boolean {
@@ -93,6 +99,19 @@ export default class StacktraceContent extends React.Component<Props, State> {
     }));
   };
 
+  handleToggleFunctionName = (frameID: string) => (
+    event: React.MouseEvent<SVGElement>
+  ) => {
+    event.stopPropagation(); // to prevent collapsing if collapsable
+
+    this.setState(
+      prevState => ({
+        showCompleteFunctionName: !prevState.showCompleteFunctionName,
+      }),
+      () => scrollToElement(`#${frameID}`, {align: 'top', offset: -17, duration: -1})
+    );
+  };
+
   getClassName() {
     const {className = '', includeSystemFrames} = this.props;
 
@@ -102,7 +121,6 @@ export default class StacktraceContent extends React.Component<Props, State> {
 
     return `${className} traceback in-app-traceback`;
   }
-
   render() {
     const {
       data,
@@ -111,7 +129,7 @@ export default class StacktraceContent extends React.Component<Props, State> {
       platform,
       includeSystemFrames,
     } = this.props;
-    const {showingAbsoluteAddresses} = this.state;
+    const {showingAbsoluteAddresses, showCompleteFunctionName} = this.state;
 
     let firstFrameOmitted = null;
     let lastFrameOmitted = null;
@@ -179,6 +197,7 @@ export default class StacktraceContent extends React.Component<Props, State> {
         frames.push(
           <Line
             key={frameIdx}
+            frameID={frameIdx + 1}
             data={frame}
             isExpanded={expandFirstFrame && lastFrameIdx === frameIdx}
             emptySourceNotation={lastFrameIdx === frameIdx && frameIdx === 0}
@@ -194,6 +213,8 @@ export default class StacktraceContent extends React.Component<Props, State> {
             registers={{}} //TODO: Fix registers
             isFrameAfterLastNonApp={isFrameAfterLastNonApp}
             includeSystemFrames={includeSystemFrames}
+            onFunctionNameToggle={this.handleToggleFunctionName}
+            showCompleteFunctionName={showCompleteFunctionName}
           />
         );
       }
@@ -221,9 +242,45 @@ export default class StacktraceContent extends React.Component<Props, State> {
     const className = this.getClassName();
 
     return (
-      <div className={className}>
-        <ul>{frames}</ul>
-      </div>
+      <Wrapper className={className}>
+        <StyledPlatformIcon
+          platform={platform}
+          size="20px"
+          style={{borderRadius: '3px 0 0 3px'}}
+        />
+        <StyledList platform={platform}>{frames}</StyledList>
+      </Wrapper>
     );
   }
 }
+
+const Wrapper = styled('div')`
+  position: relative;
+  border-top-left-radius: 0;
+`;
+
+const StyledPlatformIcon = styled(PlatformIcon)`
+  position: absolute;
+  top: -1px;
+  left: -20px;
+`;
+
+const StyledList = styled(List)<{platform: PlatformType}>`
+  padding-left: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+`;
+
+const StyledListItem = styled(ListItem)`
+  padding-left: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  ul &:before {
+    content: none;
+  }
+  > * {
+    flex: 1;
+    width: 100%;
+  }
+`;
