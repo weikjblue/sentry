@@ -69,7 +69,7 @@ jobs:
         - name: setup matchers
           id: matchers
           run: |
-            echo "::remove-matcher owner=masters::"
+            echo "::remove-matcher owner=matchers::"
             echo "::add-matcher::.github/tsc.json"
             echo "::add-matcher::.github/eslint-stylish.json"
 
