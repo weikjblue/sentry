@@ -17,11 +17,11 @@ const KNOWN_RULES = {
 };
 
 export function getTooltipText({
-  remark,
-  rule_id: rule,
+  remark = '',
+  rule_id: rule = '',
 }: Pick<ChunkType, 'remark' | 'rule_id'>) {
-  const remark_title = remark ? REMARKS[remark] : undefined;
-  const rule_title = rule ? KNOWN_RULES[rule] || t('PII rule "%s"', rule) : undefined;
+  const remark_title = REMARKS[remark];
+  const rule_title = KNOWN_RULES[rule] || t('PII rule "%s"', rule);
 
   if (remark_title) {
     return t('%s because of %s', remark_title, rule_title);

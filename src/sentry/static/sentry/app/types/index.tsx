@@ -1339,7 +1339,7 @@ export type MetaRemark = Array<string | number>;
 export type ChunkType = {
   text: string;
   type: string;
-  rule_id?: string | number;
+  rule_id: string | number;
   remark?: string | number;
 };
 
