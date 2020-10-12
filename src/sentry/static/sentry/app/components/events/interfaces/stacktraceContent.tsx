@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import PlatformIcon from 'platformicons';
 import scrollToElement from 'scroll-to-element';
 
 import Line from 'app/components/events/interfaces/frame/line';
@@ -242,34 +241,21 @@ export default class StacktraceContent extends React.Component<Props, State> {
     const className = this.getClassName();
 
     return (
-      <Wrapper className={className}>
-        <StyledPlatformIcon
-          platform={platform}
-          size="20px"
-          style={{borderRadius: '3px 0 0 3px'}}
-        />
-        <StyledList platform={platform}>{frames}</StyledList>
-      </Wrapper>
+      <div className={className}>
+        <StyledList>{frames}</StyledList>
+      </div>
     );
   }
 }
 
-const Wrapper = styled('div')`
-  position: relative;
-  border-top-left-radius: 0;
-`;
-
-const StyledPlatformIcon = styled(PlatformIcon)`
-  position: absolute;
-  top: -1px;
-  left: -20px;
-`;
-
-const StyledList = styled(List)<{platform: PlatformType}>`
+const StyledList = styled(List)`
   padding-left: 0;
   flex-direction: column;
   align-items: flex-start;
   position: relative;
+  > *:first-child {
+    border-top: 0;
+  }
 `;
 
 const StyledListItem = styled(ListItem)`
