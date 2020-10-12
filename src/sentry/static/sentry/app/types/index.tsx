@@ -272,7 +272,7 @@ type EntryType = {
   type: string;
 };
 
-export type EventTag = Record<string, string>;
+export type EventTag = {key: string; value: string};
 
 export type EventUser = {
   username?: string;
