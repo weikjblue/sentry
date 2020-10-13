@@ -12,7 +12,7 @@ enum PILL_TYPE {
 type Props = {
   name: string;
   value: string | boolean | undefined | null;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 };
 
 const Pill = React.memo(({name, value, children}: Props) => {
@@ -53,7 +53,7 @@ const Pill = React.memo(({name, value, children}: Props) => {
   return (
     <StyledPill type={type}>
       <PillName>{name}</PillName>
-      <PillValue>{children || renderValue}</PillValue>
+      <PillValue>{children ?? renderValue}</PillValue>
     </StyledPill>
   );
 });
