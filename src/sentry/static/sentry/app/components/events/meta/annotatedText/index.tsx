@@ -90,6 +90,7 @@ const Wrapper = styled('span')`
 `;
 
 const StyledListItem = styled(ListItem)`
+  padding-left: ${space(3)};
   ul & {
     color: ${p => p.theme.white};
     &:before {

@@ -95,15 +95,19 @@ class EventSerializer(Serializer):
         else:
             raw_tags = event.tags
 
+        from sentry.utils.json import prune_empty_keys
+
         tags = sorted(
             [
                 {
                     "key": kv[0].split("sentry:", 1)[-1],
                     "value": kv[1],
-                    "_meta": meta.get(kv[0]) or get_path(meta, six.text_type(i), "1") or None,
+                    "_meta": prune_empty_keys({
+                        "key": get_path(meta, six.text_type(i), "0"),
+                        "value": get_path(meta, six.text_type(i), "1"),
+                    }),
                 }
                 for i, kv in enumerate(raw_tags)
-                if kv is not None and kv[0] is not None and kv[1] is not None
             ],
             key=lambda x: x["key"],
         )
@@ -115,11 +119,10 @@ class EventSerializer(Serializer):
             if query:
                 tag["query"] = query
 
-        tags_meta = {
-            six.text_type(i): {"value": e.pop("_meta")}
+        tags_meta = prune_empty_keys({
+            six.text_type(i): e.pop("_meta")
             for i, e in enumerate(tags)
-            if e.get("_meta")
-        }
+        })
 
         return (tags, meta_with_chunks(tags, tags_meta))
 

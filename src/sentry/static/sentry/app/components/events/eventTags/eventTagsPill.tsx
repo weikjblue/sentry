@@ -23,8 +23,8 @@ type Props = {
   location: Location;
   orgId: string;
   projectId: string;
-  meta?: Meta;
   hasQueryFeature: boolean;
+  meta?: Meta;
 };
 
 const EventTagsPill = ({
@@ -43,7 +43,7 @@ const EventTagsPill = ({
   const isTrace = tag.key === 'trace';
 
   return (
-    <Pill key={tag.key} name={tag.key} value={tag.value}>
+    <Pill name={tag.key} value={tag.value}>
       <Link
         to={{
           pathname: streamPath,
@@ -53,9 +53,10 @@ const EventTagsPill = ({
         {isRelease ? (
           <Version version={tag.value} anchor={false} tooltipRawVersion truncate />
         ) : (
-          <DeviceName value={tag.value}>
-            {deviceName => <AnnotatedText value={deviceName} meta={meta} />}
-          </DeviceName>
+          <AnnotatedText
+            value={tag.value && <DeviceName value={tag.value} />}
+            meta={meta}
+          />
         )}
       </Link>
       {isUrl(tag.value) && (
