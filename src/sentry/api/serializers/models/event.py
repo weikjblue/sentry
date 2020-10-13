@@ -102,10 +102,12 @@ class EventSerializer(Serializer):
                 {
                     "key": kv[0].split("sentry:", 1)[-1],
                     "value": kv[1],
-                    "_meta": prune_empty_keys({
-                        "key": get_path(meta, six.text_type(i), "0"),
-                        "value": get_path(meta, six.text_type(i), "1"),
-                    }),
+                    "_meta": prune_empty_keys(
+                        {
+                            "key": get_path(meta, six.text_type(i), "0"),
+                            "value": get_path(meta, six.text_type(i), "1"),
+                        }
+                    ),
                 }
                 for i, kv in enumerate(raw_tags)
             ],
@@ -119,10 +121,7 @@ class EventSerializer(Serializer):
             if query:
                 tag["query"] = query
 
-        tags_meta = prune_empty_keys({
-            six.text_type(i): e.pop("_meta")
-            for i, e in enumerate(tags)
-        })
+        tags_meta = prune_empty_keys({six.text_type(i): e.pop("_meta") for i, e in enumerate(tags)})
 
         return (tags, meta_with_chunks(tags, tags_meta))
 
