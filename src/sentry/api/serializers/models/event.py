@@ -206,6 +206,7 @@ class EventSerializer(Serializer):
         return (
             not name.startswith("breadcrumbs.")
             and not name.startswith("extra.")
+            and not name.startswith("tags.")
             and ".frames." not in name
         )
 
