@@ -107,7 +107,8 @@ class EventSerializer(Serializer):
                             "key": get_path(meta, six.text_type(i), "0"),
                             "value": get_path(meta, six.text_type(i), "1"),
                         }
-                    ),
+                    )
+                    or None,
                 }
                 for i, kv in enumerate(raw_tags)
             ],
